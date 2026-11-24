@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>恐龙跑酷 · 摸鱼游戏厅</title><link rel="stylesheet" href="shared.css">
+<style>#cv{background:#FAFAFA;border:1px solid var(--line-strong);border-radius:var(--radius);width:min(90vw,520px);height:200px;touch-action:manipulation;cursor:pointer}</style>
+</head>
+<body class="tone-ochre">
+<div class="topbar"><a class="home" href="index.html">游戏厅</a><div class="title">恐龙跑酷</div>
+  <div class="stats"><div class="stat"><div class="k">得分</div><div class="v" id="score">0</div></div></div></div>
+<div class="game-wrap"><div class="panel" style="position:relative;padding:10px;">
+  <canvas id="cv" width="520" height="200"></canvas>
+  <div class="overlay" id="over" hidden><div>撞到仙人掌了！</div><button class="btn" onclick="start()">再来一局</button></div>
+</div>
+<p class="tip">空格 / 点击 / 触摸 → 跳跃。躲开仙人掌，跑得越远分越高。断网时 Chrome 的隐藏彩蛋。</p></div>
+<script>
+const cv=document.getElementById('cv'),ctx=cv.getContext('2d'),W=520,H=200;
+let dino,obstacles,score,timer,speed,dead,frame;
+function start(){dino={y:150,vy:0,jump:false};obstacles=[];score=0;speed=5;dead=false;frame=0;
+  document.getElementById('over').hidden=true;document.getElementById('score').textContent=0;
+  clearInterval(timer);timer=setInterval(step,16);draw();}
+function jump(){if(dead)return;if(!dino.jump){dino.jump=true;dino.vy=-12;}}
+function step(){if(dead)return;frame++;speed=5+score/120;
+  if(dino.jump){dino.y+=dino.vy;dino.vy+=.7;if(dino.y>=150){dino.y=150;dino.jump=false;}}
+  if(!obstacles.length||obstacles[obstacles.length-1].x<W-140){
+    const tall=Math.random()>.55;obstacles.push({x:W,y:150-(tall?36:22),w:tall?16:24,h:tall?36:22,tall});}
+  obstacles.forEach(o=>{o.x-=speed;
+    if(60+22>o.x&&42<o.x+o.w&&dino.y+38>o.y){dead=true;clearInterval(timer);document.getElementById('over').hidden=false;}});
+  obstacles=obstacles.filter(o=>o.x>-40);
+  if(frame%8===0){score++;document.getElementById('score').textContent=score;}
+  draw();}
+function draw(){ctx.fillStyle='#FAFAFA';ctx.fillRect(0,0,W,H);
+  ctx.fillStyle='#D6D3D1';ctx.fillRect(0,168,W,2);
+  for(let i=0;i<20;i++){const x=(i*43-frame*speed)%W;ctx.fillRect((x+W)%W,166,4,4);}
+  // dino 像素剪影
+  ctx.fillStyle='#3F3F46';
+  ctx.fillRect(42,dino.y+8,22,26);ctx.fillRect(48,dino.y,14,12);
+  ctx.fillRect(62,dino.y+6,10,8);ctx.fillRect(44,dino.y+34,8,6);ctx.fillRect(56,dino.y+34,8,6);
+  ctx.fillStyle='#FAFAFA';ctx.fillRect(58,dino.y+4,4,4);
+  ctx.fillStyle='#65A30D';obstacles.forEach(o=>{ctx.fillRect(o.x,o.y+6,o.w,o.h-6);
+    ctx.fillRect(o.x+o.w/2-2,o.y,o.w>18?4:3,10);
+    ctx.fillRect(o.x-3,o.y+16,o.w+6,4);});
+  if(score===0&&!dead){ctx.fillStyle='#78716C';ctx.font='14px sans-serif';ctx.textAlign='center';ctx.fillText('空格 / 点击 跳跃',W/2,40);}}
+document.addEventListener('keydown',e=>{if(e.code==='Space'){e.preventDefault();jump();}});
+cv.addEventListener('mousedown',jump);cv.addEventListener('touchstart',e=>{e.preventDefault();jump();},{passive:false});
+start();
+</script><script src="shared.js"></script></body></html>

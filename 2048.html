@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2048 · 摸鱼游戏厅</title><link rel="stylesheet" href="shared.css">
+<style>
+  #board { position: relative; width: min(88vw, 380px); aspect-ratio: 1;
+    background: #BBF7D0; border-radius: 14px; padding: 10px; display: grid;
+    grid-template-columns: repeat(4,1fr); grid-template-rows: repeat(4,1fr); gap: 10px; }
+  .cell { background: rgba(255,255,255,.42); border-radius: 9px; display: flex;
+    align-items: center; justify-content: center; font-weight: 900; font-size: clamp(19px,6vw,30px); color: #7C2D12; }
+  .c2{background:#FFEDD5}.c4{background:#FED7AA}.c8{background:#FDBA74;color:#fff}
+  .c16{background:#FB923C;color:#fff}.c32{background:#F97316;color:#fff}
+  .c64{background:#EA580C;color:#fff}.c128{background:#C2410C;color:#fff;font-size:clamp(17px,5vw,25px)}
+  .c256{background:#9A3412;color:#fff;font-size:clamp(17px,5vw,25px)}
+  .c512{background:#7C2D12;color:#fff;font-size:clamp(17px,5vw,25px)}
+  .c1024{background:#431407;color:#fff;font-size:clamp(14px,4vw,21px)}
+  .c2048{background:#EA580C;color:#fff;font-size:clamp(14px,4vw,21px);box-shadow:0 0 18px #F97316}
+</style>
+</head>
+<body class="tone-olive">
+<div class="topbar"><a class="home" href="index.html">游戏厅</a><div class="title">2048</div>
+  <div class="stats"><div class="stat"><div class="k">分数</div><div class="v" id="score">0</div></div></div></div>
+<div class="game-wrap"><div class="panel" style="position:relative;">
+  <div id="board"></div>
+  <div class="overlay" id="over" hidden><div id="overText">游戏结束</div><button class="btn" onclick="newGame()">再来一局</button></div>
+</div>
+<div class="controls"><button class="btn" onclick="newGame()">新游戏</button></div>
+<p class="tip">方向键 / WASD 移动，手机直接<b>滑动</b>棋盘。相同数字相撞合并，凑出 <b>2048</b> 就赢了。</p>
+</div>
+<script>
+let grid, score, best = +(localStorage.getItem('moyu2048best')||0);
+const board = document.getElementById('board');
+function emptyGrid(){ return Array.from({length:4},()=>Array(4).fill(0)); }
+function spawn(){ const e=[]; for(let r=0;r<4;r++)for(let c=0;c<4;c++)if(!grid[r][c])e.push([r,c]);
+  if(e.length){const [r,c]=e[Math.floor(Math.random()*e.length)];grid[r][c]=Math.random()<.9?2:4;} }
+function draw(){ board.innerHTML=''; for(let r=0;r<4;r++)for(let c=0;c<4;c++){
+  const d=document.createElement('div'); const v=grid[r][c];
+  d.className='cell'+(v?' c'+v:''); d.textContent=v||''; board.appendChild(d);}
+  document.getElementById('score').textContent=score;
+  if(score>best){best=score;localStorage.setItem('moyu2048best',best);} }
+function newGame(){ grid=emptyGrid(); score=0; spawn(); spawn(); document.getElementById('over').hidden=true; draw(); }
+function move(dir){
+  let moved=false; const g=grid;
+  const lines=[];
+  for(let i=0;i<4;i++){
+    lines.push(dir==='left'?[0,1,2,3].map(j=>[i,j]):dir==='right'?[3,2,1,0].map(j=>[i,j]):
+      dir==='up'?[0,1,2,3].map(j=>[j,i]):[3,2,1,0].map(j=>[j,i]));
+  }
+  lines.forEach(line=>{
+    const vals=line.map(([r,c])=>g[r][c]).filter(v=>v);
+    const res=[];
+    for(let k=0;k<vals.length;k++){
+      if(k+1<vals.length&&vals[k]===vals[k+1]){res.push(vals[k]*2);score+=vals[k]*2;k++;}
+      else res.push(vals[k]);
+    }
+    line.forEach(([r,c],idx)=>{ const nv=res[idx]||0; if(g[r][c]!==nv)moved=true; g[r][c]=nv; });
+  });
+  if(moved){ spawn(); draw(); if(!canMove()){ document.getElementById('overText').textContent = grid.flat().includes(2048)?'🎉 你赢了！':'游戏结束'; document.getElementById('over').hidden=false; } }
+}
+function canMove(){ for(let r=0;r<4;r++)for(let c=0;c<4;c++){
+  if(!grid[r][c])return true;
+  if(c<3&&grid[r][c]===grid[r][c+1])return true;
+  if(r<3&&grid[r][c]===grid[r+1][c])return true;} return false; }
+const keys={ArrowLeft:'left',ArrowRight:'right',ArrowUp:'up',ArrowDown:'down',a:'left',d:'right',w:'up',s:'down',A:'left',D:'right',W:'up',S:'down'};
+document.addEventListener('keydown',e=>{ if(keys[e.key]){e.preventDefault();move(keys[e.key]);} });
+let tsx,tsy;
+board.addEventListener('touchstart',e=>{tsx=e.touches[0].clientX;tsy=e.touches[0].clientY;},{passive:true});
+board.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-tsx,dy=e.changedTouches[0].clientY-tsy;
+  if(Math.max(Math.abs(dx),Math.abs(dy))<24)return;
+  move(Math.abs(dx)>Math.abs(dy)?(dx>0?'right':'left'):(dy>0?'down':'up'));},{passive:true});
+newGame();
+</script><script src="shared.js"></script></body></html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>扫雷 · 摸鱼游戏厅</title><link rel="stylesheet" href="shared.css">
+<style>
+  #grid{display:grid;grid-template-columns:repeat(9,1fr);gap:2px;background:var(--line);padding:4px;border-radius:var(--radius);width:min(88vw,378px)}
+  .c{aspect-ratio:1;background:#FDBA74;border:none;border-radius:4px;font-size:clamp(13px,3.6vw,18px);font-weight:900;color:var(--ink);cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1}
+  .c.open{background:var(--surface);cursor:default}.c.flag{background:#FCA5A5}
+  .c.mine{background:#EF4444;color:#fff}
+  .n1{color:#2563EB}.n2{color:#16A34A}.n3{color:#DC2626}.n4{color:#7C3AED}.n5{color:#B45309}
+</style>
+</head>
+<body class="tone-teal">
+<div class="topbar"><a class="home" href="index.html">游戏厅</a><div class="title">扫雷</div>
+  <div class="stats"><div class="stat"><div class="k">剩余雷</div><div class="v" id="left">10</div></div></div></div>
+<div class="game-wrap"><div class="panel" style="position:relative;padding:12px;">
+  <div id="grid"></div>
+  <div class="overlay" id="over" hidden><div id="overText">踩雷了</div><button class="btn" onclick="start()">再来一局</button></div>
+</div>
+<div class="controls"><button class="btn" onclick="start()">新游戏</button></div>
+<p class="tip">左键/open 翻开，右键/long-press 插旗。翻开所有非雷格子就赢了。初级 9×9，10 颗雷。</p></div>
+<script>
+const R=9,C=9,M=10;let cells,mines,opened,flags,dead,started;
+const gridEl=document.getElementById('grid');
+function start(){gridEl.innerHTML='';cells=[];mines=new Set();opened=0;flags=0;dead=false;started=false;
+  document.getElementById('over').hidden=true;
+  for(let i=0;i<R*C;i++){const b=document.createElement('button');b.className='c';const idx=i;
+    b.onclick=()=>open(idx);b.oncontextmenu=e=>{e.preventDefault();flag(idx);};
+    let t; b.ontouchstart=e=>{t=setTimeout(()=>flag(idx),500)};
+    b.ontouchend=()=>clearTimeout(t);
+    gridEl.appendChild(b);cells.push({open:false,flag:false,mine:false,n:0});}
+  document.getElementById('left').textContent=M;
+}
+function place(safe){let placed=0;
+  while(placed<M){const i=Math.floor(Math.random()*R*C);
+    if(i===safe||mines.has(i))continue;
+    mines.add(i);cells[i].mine=true;placed++;
+    const r=Math.floor(i/C),c=i%C;
+    [[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]].forEach(([dr,dc])=>{
+      const nr=r+dr,nc=c+dc;if(nr>=0&&nr<R&&nc>=0&&nc<C)cells[nr*C+nc].n++;});
+  }}
+function open(i){if(dead||cells[i].open||cells[i].flag)return;
+  if(!started){place(i);started=true;}
+  if(cells[i].mine){dead=true;revealAll();document.getElementById('overText').textContent='💥 踩雷了';document.getElementById('over').hidden=false;return;}
+  flood(i);check();
+}
+function flood(i){const q=[i],seen=new Set();while(q.length){const k=q.shift();if(seen.has(k))continue;seen.add(k);
+  const c=cells[k];if(c.open||c.flag||c.mine)continue;c.open=true;opened++;
+  if(c.n===0){const r=Math.floor(k/C),col=k%C;
+    [[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]].forEach(([dr,dc])=>{
+      const nr=r+dr,nc=col+dc;if(nr>=0&&nr<R&&nc>=0&&nc<C)q.push(nr*C+nc);});}}
+  render();}
+function flag(i){if(dead||cells[i].open)return;cells[i].flag=!cells[i].flag;flags+=cells[i].flag?1:-1;
+  document.getElementById('left').textContent=M-flags;render();}
+function check(){if(opened===R*C-M){document.getElementById('overText').textContent='🎉 扫雷成功！';document.getElementById('over').hidden=false;}}
+function revealAll(){cells.forEach((c,i)=>{if(c.mine){gridEl.children[i].className='c open mine';gridEl.children[i].textContent='💣';}});}
+function render(){cells.forEach((c,i)=>{const el=gridEl.children[i];el.className='c'+(c.open?' open':c.flag?' flag':'');
+  if(c.open){el.textContent=c.mine?'💣':c.n||'';if(c.n)el.classList.add('n'+c.n);}
+  else el.textContent=c.flag?'🚩':'';});}
+start();
+</script><script src="shared.js"></script></body></html>

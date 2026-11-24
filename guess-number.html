@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>猜数字 1A2B · 摸鱼游戏厅</title><link rel="stylesheet" href="shared.css">
+<style>
+  .main{text-align:center;width:min(90vw,440px)}
+  .msg{font-size:16px;font-weight:800;color:var(--accent-hover);margin:14px 0;min-height:24px}
+  .board{background:#1E293B;border-radius:var(--radius);padding:12px;margin:12px 0;text-align:left;font-family:Consolas,Monaco,monospace;min-height:120px;max-height:220px;overflow:auto}
+  .row{display:flex;justify-content:space-between;color:#86EFAC;font-size:13px;padding:3px 6px;border-bottom:1px solid #334155}
+  .row .res{color:#FCD34D;font-weight:800}
+  .inputrow{display:flex;gap:8px;justify-content:center;margin-top:12px}
+  input{width:130px;padding:11px;border:1px solid var(--line-strong);border-radius:var(--radius);font-size:20px;text-align:center;letter-spacing:4px;color:var(--ink);outline:none;font-family:Consolas,monospace}
+  .hint{font-size:12px;color:var(--ink-2);opacity:.85;margin-top:8px}
+</style>
+</head>
+<body class="tone-plum">
+<div class="topbar"><a class="home" href="index.html">游戏厅</a><div class="title">猜数字 1A2B</div>
+  <div class="stats"><div class="stat"><div class="k">剩余次数</div><div class="v" id="left">20</div></div></div></div>
+<div class="game-wrap"><div class="panel main">
+  <div style="font-size:14px;color:var(--ink-2)">猜一个 <b>四位不重复数字</b>。<b style="color:var(--accent)">A</b>=数字和位置都对，<b style="color:var(--accent)">B</b>=数字对位置错</div>
+  <div class="msg" id="msg">开始吧，终端等你输入</div>
+  <div class="board" id="board"><div class="row"><span>系统 &gt; 目标已生成，请输入 4 位数字_</span></div></div>
+  <div class="inputrow"><input id="inp" maxlength="4" inputmode="numeric" placeholder="____" autocomplete="off">
+    <button class="btn" onclick="guess()">提交 ↵</button></div>
+  <div class="hint">例：答案 1234，你猜 1324 → <b>2A2B</b>。最佳记录存本地。</div>
+</div>
+<p class="tip">Wordle 的极简版兄弟：不用词库、不用懂英文，一个输入框加一个回车就开玩。</p></div>
+<script src="shared.js"></script>
+<script>
+let ans,left,history;
+function start(){const d=[0,1,2,3,4,5,6,7,8,9].sort(()=>Math.random()-.5);ans=d.slice(0,4).join('');
+  left=20;history=[];
+  document.getElementById('left').textContent=left;
+  document.getElementById('msg').textContent='开始吧，终端等你输入';
+  document.getElementById('board').innerHTML='<div class="row"><span>系统 &gt; 目标已生成，请输入 4 位数字_</span></div>';
+  document.getElementById('inp').value='';document.getElementById('inp').disabled=false;}
+function guess(){const inp=document.getElementById('inp'),v=inp.value.trim();
+  if(!/^\d{4}$/.test(v)){document.getElementById('msg').textContent='请输入 4 位数字';return;}
+  if(new Set(v).size<4){document.getElementById('msg').textContent='四个数字不能重复';return;}
+  if(history.includes(v)){document.getElementById('msg').textContent='这个猜过了';return;}
+  let a=0,b=0;
+  for(let i=0;i<4;i++){if(v[i]===ans[i])a++;else if(ans.includes(v[i]))b++;}
+  history.push(v);left--;
+  document.getElementById('left').textContent=left;
+  const row=document.createElement('div');row.className='row';
+  row.innerHTML='<span>&gt; '+v+'</span><span class="res">'+a+'A'+b+'B</span>';
+  const board=document.getElementById('board');board.appendChild(row);board.scrollTop=board.scrollHeight;
+  const m=document.getElementById('msg');
+  if(a===4){m.textContent='🎉 破解成功！答案是 '+ans;
+    const best=+(localStorage.getItem('moyu1A2Bbest')||99);
+    if(20-left<best)localStorage.setItem('moyu1A2Bbest',20-left);
+    board.innerHTML+='<div class="row"><span>系统 &gt; ACCESS GRANTED ✓ 用了 '+(20-left)+' 次</span></div>';
+    inp.disabled=true;}
+  else if(left===0){m.textContent='机会用尽，答案是 '+ans;inp.disabled=true;}
+  else m.textContent=a+'A'+b+'B · 还剩 '+left+' 次';
+  inp.value='';inp.focus();}
+document.getElementById('inp').addEventListener('keydown',e=>{if(e.key==='Enter')guess();});
+start();
+</script></body></html>

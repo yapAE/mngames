@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flappy Bird · 摸鱼游戏厅</title><link rel="stylesheet" href="shared.css">
+<style>#cv{background:linear-gradient(#7DD3FC,#E0F2FE);border:1px solid var(--line-strong);border-radius:var(--radius);width:min(88vw,360px);height:min(62vh,480px);touch-action:manipulation;cursor:pointer}</style>
+</head>
+<body class="tone-teal">
+<div class="topbar"><a class="home" href="index.html">游戏厅</a><div class="title">Flappy Bird</div>
+  <div class="stats"><div class="stat"><div class="k">得分</div><div class="v" id="score">0</div></div></div></div>
+<div class="game-wrap"><div class="panel" style="position:relative;padding:10px;">
+  <canvas id="cv" width="360" height="480"></canvas>
+  <div class="overlay" id="over" hidden><div>撞上了！</div><button class="btn" onclick="start()">再来一局</button></div>
+</div>
+<p class="tip">空格 / 点击 / 触摸 → 拍翅膀。穿过水管得分，碰管壁或地面就结束。曾日入 5 万美元的神作。</p></div>
+<script>
+const cv=document.getElementById('cv'),ctx=cv.getContext('2d'),W=360,H=480;
+let bird,pipes,score,timer,started,dead;
+function start(){bird={x:100,y:H/2,vy:0};pipes=[];score=0;started=false;dead=false;
+  document.getElementById('over').hidden=true;document.getElementById('score').textContent=0;
+  clearInterval(timer);timer=setInterval(step,16);draw();}
+function flap(){if(dead)return;if(!started)started=true;bird.vy=-7.5;}
+function makePipe(){const gap=140,top=60+Math.random()*(H-gap-160);
+  pipes.push({x:W+10,top:top,gap:gap,w:62});}
+function step(){if(!started||dead)return;
+  bird.vy+=.45;bird.y+=bird.vy;
+  if(bird.y<10){bird.y=10;bird.vy=0;}
+  if(bird.y>H-40){dead=true;clearInterval(timer);document.getElementById('over').hidden=false;return;}
+  if(!pipes.length||pipes[pipes.length-1].x<W-190)makePipe();
+  pipes.forEach(p=>{p.x-=3;
+    if(bird.x+14>p.x&&bird.x-14<p.x+p.w){
+      if(bird.y-12<p.top||bird.y+12>p.top+p.gap){dead=true;clearInterval(timer);document.getElementById('over').hidden=false;}}
+    if(!p.scored&&p.x+p.w<bird.x){p.scored=true;score++;document.getElementById('score').textContent=score;}});
+  pipes=pipes.filter(p=>p.x>-70);draw();}
+function draw(){const g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#7DD3FC');g.addColorStop(1,'#E0F2FE');
+  ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+  ctx.fillStyle='#86EFAC';ctx.fillRect(0,H-38,W,38);
+  ctx.fillStyle='#4ADE80';for(let x=0;x<W;x+=40)ctx.fillRect(x,H-46,20,8);
+  ctx.fillStyle='#65A30D';pipes.forEach(p=>{ctx.fillRect(p.x,0,p.w,p.top);
+    ctx.fillRect(p.x-4,p.top-14,p.w+8,14);
+    ctx.fillRect(p.x,p.top+p.gap,p.w,H);ctx.fillRect(p.x-4,p.top+p.gap,p.w+8,14);});
+  ctx.fillStyle='#FACC15';ctx.beginPath();ctx.arc(bird.x,bird.y,13,0,7);ctx.fill();
+  ctx.fillStyle='#EA580C';ctx.beginPath();ctx.moveTo(bird.x+12,bird.y+2);ctx.lineTo(bird.x+22,bird.y+6);ctx.lineTo(bird.x+12,bird.y+9);ctx.fill();
+  ctx.fillStyle='#000';ctx.beginPath();ctx.arc(bird.x+5,bird.y-4,2,0,7);ctx.fill();
+  if(!started){ctx.fillStyle='rgba(67,20,7,.7)';ctx.font='bold 20px sans-serif';ctx.textAlign='center';ctx.fillText('点击 / 空格 开始',W/2,H/2);}}
+document.addEventListener('keydown',e=>{if(e.code==='Space'){e.preventDefault();flap();}});
+cv.addEventListener('mousedown',flap);cv.addEventListener('touchstart',e=>{e.preventDefault();flap();},{passive:false});
+start();
+</script><script src="shared.js"></script></body></html>

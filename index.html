@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>摸鱼游戏厅 · 10 款打开即玩的小游戏</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+  .site { width:100%; max-width:760px; margin:0 auto; padding:0 var(--s4) var(--s6); }
+  .masthead {
+    display:flex; align-items:baseline; justify-content:space-between;
+    padding:var(--s5) 0 var(--s3); border-bottom:2px solid var(--ink);
+  }
+  .masthead .brand {
+    font-family:var(--font-mono); font-size:var(--fs-micro);
+    letter-spacing:.18em; text-transform:uppercase; color:var(--ink);
+  }
+  .masthead .meta {
+    font-family:var(--font-mono); font-size:var(--fs-micro);
+    letter-spacing:.06em; color:var(--ink-3);
+    white-space:nowrap; flex-shrink:0;
+  }
+  /* 印刷色标：紧跟刊头黑线的离散色块，非渐变 */
+  .swatches { display:flex; gap:3px; margin-top:6px; }
+  .swatches i { display:block; height:4px; width:30px; }
+  .swatches i:nth-child(1){ background:var(--olive); }
+  .swatches i:nth-child(2){ background:var(--indigo); }
+  .swatches i:nth-child(3){ background:var(--teal); }
+  .swatches i:nth-child(4){ background:var(--plum); }
+  .swatches i:nth-child(5){ background:var(--ochre); }
+  .swatches i:nth-child(6){ background:var(--accent); }
+  .hero { padding:var(--s5) 0 var(--s4); }
+  .hero h1 {
+    font-family:var(--font-serif); font-size:var(--fs-display);
+    font-weight:600; line-height:1.15; letter-spacing:.01em;
+    margin:0 0 var(--s2); color:var(--ink);
+  }
+  .hero .sub { font-size:var(--fs-body); color:var(--ink-2); margin:0; }
+  .hero .sub em { font-style:normal; color:var(--accent); font-weight:600; }
+
+  .section-label {
+    display:flex; align-items:center; gap:var(--s2);
+    font-family:var(--font-mono); font-size:var(--fs-micro);
+    letter-spacing:.14em; text-transform:uppercase; color:var(--tone);
+    padding:var(--s4) 0 var(--s2);
+  }
+  .section-label::after { content:""; flex:1; height:1px; background:var(--tone); opacity:.35; }
+  .section-label .dot { width:6px; height:6px; background:var(--tone); border-radius:50%; }
+
+  .list { border-top:1px solid var(--line); }
+  .item {
+    display:grid; grid-template-columns:32px 24px 1fr 20px;
+    align-items:center; gap:var(--s3);
+    padding:14px var(--s2); border-bottom:1px solid var(--line);
+    text-decoration:none; color:inherit;
+    transition:background .18s var(--ease), padding-left .18s var(--ease);
+  }
+  .item:hover { background:var(--tone-soft); padding-left:var(--s3); }
+  .item:focus-visible { outline:2px solid var(--tone); outline-offset:-2px; }
+  .item .num {
+    font-family:var(--font-mono); font-size:var(--fs-micro);
+    color:var(--tone); letter-spacing:.04em; font-weight:600;
+  }
+  .item .ico {
+    width:20px; height:20px; color:var(--tone);
+    transition:color .18s var(--ease);
+  }
+  .item .ico svg { width:100%; height:100%; display:block; }
+  .item:hover .ico { color:var(--tone); }
+  .item .name { display:block; font-family:var(--font-serif); font-size:var(--fs-h2); font-weight:600; line-height:1.35; color:var(--ink); }
+  .item .desc { display:block; font-size:var(--fs-caption); color:var(--ink-3); margin-top:2px; }
+  .item .arrow {
+    font-family:var(--font-mono); font-size:14px; color:var(--tone); opacity:.55;
+    transition:transform .18s var(--ease), opacity .18s var(--ease);
+  }
+  .item:hover .arrow { transform:translateX(3px); opacity:1; }
+
+  .colophon {
+    margin-top:var(--s5); padding-top:var(--s3); border-top:1px solid var(--line);
+    font-size:var(--fs-caption); color:var(--ink-3); line-height:1.7;
+  }
+  .colophon code { font-family:var(--font-mono); font-size:11px; color:var(--ink-2); }
+
+  @media (max-width:560px) {
+    .site { padding:0 var(--s3) var(--s5); }
+    .masthead { flex-wrap:wrap; gap:2px var(--s2); padding-top:var(--s4); }
+    .masthead .brand { letter-spacing:.1em; }
+    .masthead .meta { font-size:10px; letter-spacing:0; flex-basis:100%; order:2; }
+    .hero { padding:var(--s4) 0 var(--s3); }
+    .item { grid-template-columns:26px 20px 1fr 16px; gap:var(--s2); padding:12px var(--s1); }
+    .item .name { font-size:15px; }
+  }
+</style>
+</head>
+<body>
+<div class="site">
+
+  <header class="masthead">
+    <span class="brand">Moyu / Games</span>
+    <span class="meta">№ 10 · 打开即玩</span>
+  </header>
+  <div class="swatches" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+
+  <div class="hero">
+    <h1>摸鱼游戏厅</h1>
+    <p class="sub">十款经典小游戏，<em>一条提示词造一个</em>。不必下载，不必登录。</p>
+  </div>
+
+  <div class="section-label tone-teal"><span class="dot"></span>桌面伪装组 · 01—04</div>
+  <nav class="list">
+
+    <a class="item tone-olive" href="2048.html">
+      <span class="num">01</span>
+      <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/><path d="M5.5 8h3M6.5 6v4M16.5 17h3"/></svg></span>
+      <span><span class="name">2048</span><span class="desc">合并数字，棋盘像一张报表</span></span>
+      <span class="arrow">→</span>
+    </a>
+
+    <a class="item tone-indigo" href="tetris.html">
+      <span class="num">02</span>
+      <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="5" height="5" rx=".5"/><rect x="8" y="3" width="5" height="5" rx=".5"/><rect x="13" y="3" width="5" height="5" rx=".5"/><rect x="8" y="8" width="5" height="5" rx=".5"/><path d="M3 17h5M13 17h8M3 21h12"/></svg></span>
+      <span><span class="name">俄罗斯方块</span><span class="desc">1984 年的老朋友，文曲星上都跑过</span></span>
+      <span class="arrow">→</span>
+    </a>
+
+    <a class="item tone-teal" href="minesweeper.html">
+      <span class="num">03</span>
+      <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9 7 7M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/></svg></span>
+      <span><span class="name">扫雷</span><span class="desc">微软当年拿来练鼠标的程序</span></span>
+      <span class="arrow">→</span>
+    </a>
+
+    <a class="item tone-plum" href="guess-number.html">
+      <span class="num">04</span>
+      <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2"/></svg></span>
+      <span><span class="name">猜数字 1A2B</span><span class="desc">四位数，十次机会，终端风</span></span>
+      <span class="arrow">→</span>
+    </a>
+
+  </nav>
+
+  <div class="section-label tone-accent"><span class="dot"></span>手动快乐组 · 05—10</div>
+  <nav class="list">
+
+    <a class="item tone-olive" href="snake.html">
+      <span class="num">05</span>
+      <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h5v-5h5V9h5"/><circle cx="19" cy="9" r="1.5"/><path d="M19 4v1M22 6l-1 1"/></svg></span>
+      <span><span class="name">贪吃蛇</span><span class="desc">诺基亚 6110 同款快乐</span></span>
+      <span class="arrow">→</span>
+    </a>
+
+    <a class="item tone-indigo" href="breakout.html">
+      <span class="num">06</span>
+      <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="8" height="4" rx=".5"/><rect x="13" y="4" width="8" height="4" rx=".5"/><rect x="3" y="10" width="8" height="4" rx=".5"/><rect x="13" y="10" width="8" height="4" rx=".5"/><circle cx="12" cy="17" r="1.5"/><path d="M6 21h12"/></svg></span>
+      <span><span class="name">打砖块</span><span class="desc">乔布斯签的单，沃兹尼亚克干的活</span></span>
+      <span class="arrow">→</span>
+    </a>
+
+    <a class="item tone-teal" href="flappy.html">
+      <span class="num">07</span>
+      <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 14c0-4 3-7 7-7 2 0 3 1 4 2l3 1-3 2c0 4-3 7-7 7-2 0-4-2-4-5Z"/><path d="M10 9c1-2 3-3 5-3M9 12l-4-2 1 5 3-1"/><circle cx="15" cy="11" r=".8"/></svg></span>
+      <span><span class="name">Flappy Bird</span><span class="desc">曾日入五万美元，然后自己下架</span></span>
+      <span class="arrow">→</span>
+    </a>
+
+    <a class="item tone-ochre" href="dino.html">
+      <span class="num">08</span>
+      <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h6l1-4 3-1 2-5 3 2 1-3"/><rect x="16" y="5" width="4" height="3" rx=".5"/><path d="M7 16v4M12 15v5"/></svg></span>
+      <span><span class="name">恐龙跑酷</span><span class="desc">断网页面的兼职，月玩 2.7 亿局</span></span>
+      <span class="arrow">→</span>
+    </a>
+
+    <a class="item tone-plum" href="memory.html">
+      <span class="num">09</span>
+      <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="13" height="15" rx="1.5"/><path d="M8 3h11a2 2 0 0 1 2 2v13"/><path d="M7 10h5M7 14h5"/></svg></span>
+      <span><span class="name">记忆翻牌</span><span class="desc">八对卡片，规则老到查不着出生年</span></span>
+      <span class="arrow">→</span>
+    </a>
+
+    <a class="item tone-accent" href="cookie.html">
+      <span class="num">10</span>
+      <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="9" cy="9" r="1"/><circle cx="15" cy="10" r="1.2"/><circle cx="10" cy="15" r="1.2"/><circle cx="15.5" cy="15" r=".8"/><path d="M12 5.5v1.5"/></svg></span>
+      <span><span class="name">饼干点击器</span><span class="desc">一点一点，点出一座工厂</span></span>
+      <span class="arrow">→</span>
+    </a>
+
+  </nav>
+
+  <footer class="colophon">
+    方向键 / WASD / 鼠标 / 触屏，各款支持情况见页内说明。<br>
+    全部为纯前端实现，零依赖、零后端；源码见 <code>games/</code>。
+  </footer>
+
+</div>
+<script src="shared.js"></script>
+</body>
+</html>

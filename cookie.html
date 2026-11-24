@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>饼干点击器 · 摸鱼游戏厅</title><link rel="stylesheet" href="shared.css">
+<style>
+  .main{text-align:center;width:min(90vw,440px)}
+  #cookie{font-size:clamp(90px,26vw,140px);cursor:pointer;user-select:none;line-height:1.2;
+    transition:transform .06s;filter:drop-shadow(0 6px 10px rgba(234,88,12,.25))}
+  #cookie:active{transform:scale(.92)}
+  .total{font-size:38px;font-weight:900;color:var(--accent);line-height:1.2;margin:8px 0}
+  .shop{margin-top:18px;text-align:left}
+  .shop h3{font-size:14px;color:var(--ink-2);margin:0 0 8px}
+  .item{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);
+    border-radius:var(--radius);padding:8px 10px;margin-bottom:6px;cursor:pointer}
+  .item:hover{border-color:#F97316}
+  .item .ic{font-size:24px}.item .meta{flex:1}
+  .item .nm{font-size:13px;font-weight:800;color:var(--ink)}
+  .item .ds{font-size:11px;color:var(--ink-2);opacity:.8}
+  .item .cost{font-size:12px;font-weight:800;color:var(--accent);white-space:nowrap}
+  .item.disabled{opacity:.5;cursor:not-allowed}
+</style>
+</head>
+<body class="tone-accent">
+<div class="topbar"><a class="home" href="index.html">游戏厅</a><div class="title">饼干点击器</div>
+  <div class="stats"><div class="stat"><div class="k">每秒</div><div class="v" id="cps">0</div></div></div></div>
+<div class="game-wrap"><div class="panel main">
+  <div class="total"><span id="count">0</span> <span style="font-size:18px">块饼干</span></div>
+  <div id="cookie">🍪</div>
+  <div class="shop"><h3>升级（自动产饼干）</h3><div id="items"></div></div>
+</div>
+<p class="tip">点一下得 1 块，买升级后每秒自动产出。挂机摸鱼神器。</p></div>
+<script>
+let count=0,cps=0;
+const SHOP=[{ic:'👆',nm:'自动手指',ds:'每秒 +1',base:15,owned:0,gain:1},
+  {ic:'🏭',nm:'小作坊',ds:'每秒 +8',base:100,owned:0,gain:8},
+  {ic:'🏎️',nm:'饼干快车',ds:'每秒 +47',base:1100,owned:0,gain:47},
+  {ic:'🚀',nm:'太空烘培厂',ds:'每秒 +260',base:12000,owned:0,gain:260}];
+function fmt(n){return n>=1e9?(n/1e9).toFixed(1)+'B':n>=1e6?(n/1e6).toFixed(1)+'M':n>=1e4?(n/1e3).toFixed(1)+'K':String(n);}
+function render(){document.getElementById('count').textContent=fmt(Math.floor(count));
+  document.getElementById('cps').textContent=fmt(cps);
+  const box=document.getElementById('items');box.innerHTML='';
+  SHOP.forEach((s)=>{const el=document.createElement('div');
+    const cost=Math.floor(s.base*Math.pow(1.15,s.owned));
+    el.className='item'+(count<cost?' disabled':'');
+    el.innerHTML='<div class="ic">'+s.ic+'</div><div class="meta"><div class="nm">'+s.nm+' ×'+s.owned+'</div><div class="ds">'+s.ds+'</div></div><div class="cost">🍪'+fmt(cost)+'</div>';
+    el.onclick=()=>{if(count>=cost){count-=cost;s.owned++;cps+=s.gain;render();}};
+    box.appendChild(el);});}
+document.getElementById('cookie').onclick=()=>{count++;render();};
+setInterval(()=>{if(cps){count+=cps/10;render();}},100);
+render();
+</script><script src="shared.js"></script></body></html>

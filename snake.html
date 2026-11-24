@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>贪吃蛇 · 摸鱼游戏厅</title><link rel="stylesheet" href="shared.css">
+<style>
+  #cv{background:#FFFBEB;border:1px solid var(--line-strong);border-radius:var(--radius);touch-action:none;width:min(88vw,360px);height:min(88vw,360px)}
+  .dpad{display:grid;grid-template-columns:repeat(3,50px);grid-template-rows:repeat(2,48px);gap:5px;justify-content:center;margin-top:10px}
+  .dpad button{border:1px solid var(--line-strong);background:var(--surface);color:var(--accent-hover);border-radius:var(--radius);font-size:19px;font-weight:900;cursor:pointer}
+</style>
+</head>
+<body class="tone-olive">
+<div class="topbar"><a class="home" href="index.html">游戏厅</a><div class="title">贪吃蛇</div>
+  <div class="stats"><div class="stat"><div class="k">得分</div><div class="v" id="score">0</div></div></div></div>
+<div class="game-wrap"><div class="panel" style="position:relative;padding:10px;">
+  <canvas id="cv" width="360" height="360"></canvas>
+  <div class="overlay" id="over" hidden><div>撞墙了！</div><button class="btn" onclick="start()">再来一局</button></div>
+</div>
+<div class="dpad"><button style="grid-column:2" onclick="dir(0,-1)">↑</button>
+  <button onclick="dir(-1,0)">←</button><button onclick="dir(0,1)">↓</button><button onclick="dir(1,0)">→</button></div>
+<p class="tip">方向键 / WASD 或点方向按钮。吃豆子长身体，别撞墙也别咬到自己。</p></div>
+<script>
+const cv=document.getElementById('cv'),ctx=cv.getContext('2d'),N=18,S=360/N;
+let snake,food,dx,dy,score,timer,locked=false;
+function start(){snake=[[5,9],[4,9],[3,9]];dx=1;dy=0;score=0;locked=false;placeFood();
+  document.getElementById('over').hidden=true;document.getElementById('score').textContent=0;
+  clearInterval(timer);timer=setInterval(step,140);draw();}
+function placeFood(){do{food=[Math.floor(Math.random()*N),Math.floor(Math.random()*N)];}while(snake.some(s=>s[0]===food[0]&&s[1]===food[1]));}
+function dir(x,y){if(locked)return;if(x===-dx&&y===-dy)return;dx=x;dy=y;locked=true;setTimeout(()=>locked=false,60);}
+function step(){const h=[snake[0][0]+dx,snake[0][1]+dy];
+  if(h[0]<0||h[0]>=N||h[1]<0||h[1]>=N||snake.some(s=>s[0]===h[0]&&s[1]===h[1])){
+    clearInterval(timer);document.getElementById('over').hidden=false;return;}
+  snake.unshift(h);
+  if(h[0]===food[0]&&h[1]===food[1]){score+=10;document.getElementById('score').textContent=score;placeFood();}
+  else snake.pop();draw();}
+function draw(){ctx.fillStyle='#FFFBEB';ctx.fillRect(0,0,360,360);
+  ctx.fillStyle='#FED7AA';for(let i=0;i<N;i++)for(let j=0;j<N;j++)if((i+j)%2===0)ctx.fillRect(i*S,j*S,S,S);
+  ctx.fillStyle='#EA580C';ctx.beginPath();ctx.arc(food[0]*S+S/2,food[1]*S+S/2,S*.38,0,7);ctx.fill();
+  snake.forEach((s,i)=>{ctx.fillStyle=i===0?'#9A3412':'#F97316';
+    ctx.fillRect(s[0]*S+1,s[1]*S+1,S-2,S-2);});}
+const keys={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1],a:[-1,0],d:[1,0],w:[0,-1],s:[0,1]};
+document.addEventListener('keydown',e=>{if(keys[e.key]){e.preventDefault();dir(...keys[e.key]);}});
+let tx,ty;cv.addEventListener('touchstart',e=>{tx=e.touches[0].clientX;ty=e.touches[0].clientY;},{passive:true});
+cv.addEventListener('touchend',e=>{const ax=e.changedTouches[0].clientX-tx,ay=e.changedTouches[0].clientY-ty;
+  if(Math.max(Math.abs(ax),Math.abs(ay))<20)return;
+  dir(Math.abs(ax)>Math.abs(ay)?(ax>0?1:-1):0,Math.abs(ay)>=Math.abs(ax)?(ay>0?1:-1):0);},{passive:true});
+start();
+</script><script src="shared.js"></script></body></html>

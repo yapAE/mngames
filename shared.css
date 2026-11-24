@@ -1,0 +1,224 @@
+/* ==========================================================================
+   摸鱼游戏厅 · 设计系统
+   编辑部 / 工具书风格：纸感底色、克制强调色、细线分隔、左侧锚定
+   ========================================================================== */
+
+:root {
+  /* 色彩：中性纸色为主，单一强调色 */
+  --paper:        #F5F3EF;
+  --surface:      #FFFEFB;
+  --ink:          #1C1917;
+  --ink-2:        #57534E;
+  --ink-3:        #A8A29E;
+  --line:         #E4E0D8;
+  --line-strong:  #D2CCC0;
+  --accent:       #A8451E;
+  --accent-hover: #8B3717;
+  --accent-soft:  #F7EFE9;
+  --success:      #3F7D52;
+  --warning:      #A87C1B;
+
+  /* 印刷色板：低饱和分类色，仅用于小面积编码，不铺底 */
+  --olive:       #4E6B4F;  --olive-soft:  #EDF1EA;  --olive-hover:  #3A523B;
+  --indigo:      #3F5A8A;  --indigo-soft: #E9EDF5;  --indigo-hover: #304670;
+  --teal:        #2E6E73;  --teal-soft:   #E4EFEF;  --teal-hover:   #225659;
+  --plum:        #7D4767;  --plum-soft:   #F1E8ED;  --plum-hover:   #623751;
+  --ochre:       #A8781C;  --ochre-soft:  #F5EEDB;  --ochre-hover:  #8A6015;
+
+  /* 当前主题色：默认砖橙，各页/各项按需覆盖 */
+  --tone: var(--accent);
+  --tone-soft: var(--accent-soft);
+  --tone-hover: var(--accent-hover);
+
+  /* 字体：三族封顶 */
+  --font-sans:  -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+  --font-serif: "Iowan Old Style", "Songti SC", "Noto Serif CJK SC", Georgia, serif;
+  --font-mono:  ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  /* 字号阶梯：跳跃明确，不用渐变式微调 */
+  --fs-display: 40px;
+  --fs-h1:      24px;
+  --fs-h2:      17px;
+  --fs-body:    14px;
+  --fs-caption: 12px;
+  --fs-micro:   11px;
+
+  /* 间距：4 / 8 / 16 / 24 / 32 / 48 */
+  --s1: 4px;  --s2: 8px;  --s3: 16px;
+  --s4: 24px; --s5: 32px; --s6: 48px;
+
+  /* 圆角与投影：小圆角，极淡投影 */
+  --radius:     4px;
+  --radius-lg:  6px;
+  --shadow:     0 1px 2px rgba(28,25,23,.04), 0 10px 28px -20px rgba(28,25,23,.16);
+  --shadow-lift:0 2px 4px rgba(28,25,23,.05), 0 14px 32px -20px rgba(28,25,23,.24);
+  --ease: cubic-bezier(.2,.7,.3,1);
+}
+
+/* 主题色：每款游戏 / 每个条目一个身份色 */
+.tone-olive  { --tone: var(--olive);  --tone-soft: var(--olive-soft);  --tone-hover: var(--olive-hover); }
+.tone-indigo { --tone: var(--indigo); --tone-soft: var(--indigo-soft); --tone-hover: var(--indigo-hover); }
+.tone-teal   { --tone: var(--teal);   --tone-soft: var(--teal-soft);   --tone-hover: var(--teal-hover); }
+.tone-plum   { --tone: var(--plum);   --tone-soft: var(--plum-soft);   --tone-hover: var(--plum-hover); }
+.tone-ochre  { --tone: var(--ochre);  --tone-soft: var(--ochre-soft);  --tone-hover: var(--ochre-hover); }
+.tone-accent { --tone: var(--accent); --tone-soft: var(--accent-soft); --tone-hover: var(--accent-hover); }
+
+/* --------------------------------------------------------------------------
+   基础
+   -------------------------------------------------------------------------- */
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  line-height: 1.6;
+  color: var(--ink);
+  background: var(--paper);
+  min-height: 100vh;
+  display: flex; flex-direction: column; align-items: center;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; }
+
+/* --------------------------------------------------------------------------
+   顶栏：细线分隔，左侧锚定，无胶囊返回按钮
+   -------------------------------------------------------------------------- */
+.topbar {
+  position: relative;
+  width: 100%; max-width: 960px;
+  padding: 18px var(--s4) 14px;
+  display: flex; align-items: center; gap: var(--s3);
+  border-bottom: 1px solid var(--line);
+  background: var(--paper);
+}
+/* 顶栏底部左侧的主题色短标：印刷色标，不铺满 */
+.topbar::after {
+  content: ""; position: absolute; left: 0; bottom: -1px;
+  width: 72px; height: 2px; background: var(--tone);
+}
+.topbar a.home {
+  color: var(--ink-2); text-decoration: none;
+  font-size: var(--fs-caption); font-weight: 600;
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 0; min-height: 44px;
+  border: 0; background: none; border-radius: 0;
+  transition: color .18s var(--ease);
+}
+.topbar a.home::before { content: "←"; font-family: var(--font-mono); font-size: 14px; }
+.topbar a.home:hover { color: var(--tone); }
+.topbar .title {
+  font-family: var(--font-serif);
+  font-size: var(--fs-h2); font-weight: 600;
+  color: var(--ink); text-align: left;
+  letter-spacing: .01em;
+  flex: 1;
+  padding-left: 12px;
+  border-left: 3px solid var(--tone);
+}
+.topbar .spacer { display: none; }
+.stats { display: flex; gap: var(--s3); align-items: center; }
+.stat { text-align: right; min-width: 56px; }
+.stat .k {
+  display: block; font-size: var(--fs-micro); color: var(--ink-3);
+  font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
+}
+.stat .v {
+  display: block; font-family: var(--font-mono);
+  font-size: 19px; font-weight: 600; color: var(--ink);
+  line-height: 1.3; font-variant-numeric: tabular-nums;
+}
+.stat .v.accent { color: var(--tone); }
+.topbar .stat .k { color: var(--tone); opacity: .85; }
+
+/* --------------------------------------------------------------------------
+   按钮：扁平、小圆角、完整交互状态
+   -------------------------------------------------------------------------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--tone); color: #fff;
+  border: 1px solid var(--tone); border-radius: var(--radius);
+  padding: 11px 22px; min-height: 44px;
+  font-family: var(--font-sans);
+  font-size: 13px; font-weight: 600; letter-spacing: .02em;
+  cursor: pointer; text-decoration: none;
+  box-shadow: none;
+  transition: background .18s var(--ease), border-color .18s var(--ease),
+              transform .18s var(--ease), box-shadow .18s var(--ease);
+}
+.btn:hover { background: var(--tone-hover); border-color: var(--tone-hover); }
+.btn:active { transform: translateY(1px); }
+.btn:focus-visible { outline: 2px solid var(--tone); outline-offset: 2px; }
+.btn:disabled, .btn.disabled { opacity: .45; cursor: not-allowed; pointer-events: none; }
+.btn.ghost {
+  background: transparent; color: var(--ink); border-color: var(--line-strong);
+}
+.btn.ghost:hover { color: var(--tone); border-color: var(--tone); background: transparent; }
+.btn.sm { padding: 7px 14px; min-height: 36px; font-size: 12px; }
+
+/* --------------------------------------------------------------------------
+   容器：细线边框 + 极淡投影，不用彩色发光
+   -------------------------------------------------------------------------- */
+.game-wrap {
+  flex: 1; width: 100%; max-width: 960px;
+  padding: var(--s4) var(--s4) var(--s5);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-top: 2px solid var(--tone);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  padding: var(--s4);
+}
+.controls { display: flex; gap: var(--s2); flex-wrap: wrap; justify-content: center; margin-top: var(--s3); }
+.tip {
+  color: var(--ink-3); font-size: var(--fs-caption); line-height: 1.7;
+  text-align: center; margin: var(--s3) 0 0; max-width: 560px;
+}
+.tip b { color: var(--ink-2); font-weight: 600; }
+.footer { padding: var(--s3) var(--s4) var(--s4); font-size: var(--fs-micro); color: var(--ink-3); text-align: center; }
+
+/* --------------------------------------------------------------------------
+   结束遮罩：纸白底细框，不用半透明黑板
+   -------------------------------------------------------------------------- */
+.overlay {
+  position: absolute; inset: 0;
+  background: rgba(255,254,251,.94);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: var(--s3); border-radius: var(--radius-lg);
+  text-align: center; padding: var(--s4);
+  color: var(--ink); font-family: var(--font-serif);
+  font-size: var(--fs-h1); font-weight: 600;
+}
+.overlay[hidden] { display: none; }
+.overlay .btn { font-family: var(--font-sans); font-size: 13px; }
+
+/* --------------------------------------------------------------------------
+   方向键 / 键盘按键：方形细框，统一线性风格
+   -------------------------------------------------------------------------- */
+.dpad button, kbd {
+  background: var(--surface); color: var(--ink-2);
+  border: 1px solid var(--line-strong); border-radius: var(--radius);
+  font-family: var(--font-mono); font-size: 13px; font-weight: 600;
+  cursor: pointer;
+  transition: border-color .18s var(--ease), color .18s var(--ease), background .18s var(--ease);
+}
+.dpad button:hover, kbd:hover { border-color: var(--tone); color: var(--tone); }
+.dpad button:active { background: var(--tone-soft); }
+.dpad button:focus-visible { outline: 2px solid var(--tone); outline-offset: 2px; }
+.dpad button:empty { pointer-events: none; border-color: transparent; }
+
+/* --------------------------------------------------------------------------
+   响应式
+   -------------------------------------------------------------------------- */
+@media (max-width: 560px) {
+  :root { --fs-display: 30px; --fs-h1: 20px; }
+  .topbar { padding: 14px var(--s3) 12px; gap: var(--s2); }
+  .topbar a.home { font-size: var(--fs-micro); }
+  .topbar .title { font-size: 15px; }
+  .game-wrap { padding: var(--s3) var(--s3) var(--s4); }
+  .stat { min-width: 44px; }
+  .stat .v { font-size: 16px; }
+  .panel { padding: var(--s3); }
+}

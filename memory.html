@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>记忆翻牌 · 摸鱼游戏厅</title><link rel="stylesheet" href="shared.css">
+<style>
+  #grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;width:min(88vw,360px)}
+  .card{aspect-ratio:1;border:1px solid var(--line-strong);border-radius:var(--radius);background:var(--accent);color:#fff;
+    font-size:clamp(22px,7vw,34px);cursor:pointer;display:flex;align-items:center;justify-content:center;
+    transition:transform .2s;user-select:none}
+  .card.flip{background:var(--surface);color:var(--ink);transform:rotateY(180deg)}
+  .card.matched{background:var(--accent-soft);color:var(--ink-2);cursor:default;opacity:.8}
+</style>
+</head>
+<body class="tone-plum">
+<div class="topbar"><a class="home" href="index.html">游戏厅</a><div class="title">记忆翻牌</div>
+  <div class="stats"><div class="stat"><div class="k">步数</div><div class="v" id="moves">0</div></div></div></div>
+<div class="game-wrap"><div class="panel" style="position:relative;padding:14px;">
+  <div id="grid"></div>
+  <div class="overlay" id="over" hidden><div id="overText">全部配对！</div><button class="btn" onclick="start()">再来一局</button></div>
+</div>
+<div class="controls"><button class="btn" onclick="start()">新游戏</button></div>
+<p class="tip">8 对卡片打乱，一次翻两张，配对成功就留下。步数越少越好。</p></div>
+<script>
+const emojis=['🍊','🍋','🍇','🍉','🍓','🍒','🥝','🥑'];
+let deck,first,second,busy,moves,matched;
+const gridEl=document.getElementById('grid');
+function start(){deck=[...emojis,...emojis].sort(()=>Math.random()-.5);first=null;second=null;busy=false;moves=0;matched=0;
+  document.getElementById('over').hidden=true;document.getElementById('moves').textContent=0;
+  gridEl.innerHTML='';
+  deck.forEach((e,i)=>{const b=document.createElement('button');b.className='card';b.textContent='❓';
+    b.onclick=()=>flip(i,b);gridEl.appendChild(b);});}
+function flip(i,el){if(busy||el.classList.contains('flip')||el.classList.contains('matched'))return;
+  el.textContent=deck[i];el.classList.add('flip');
+  if(!first){first={i,el};return;}
+  second={i,el};moves++;document.getElementById('moves').textContent=moves;busy=true;
+  if(deck[first.i]===deck[second.i]){
+    setTimeout(()=>{first.el.className='card matched';second.el.className='card matched';
+      matched++;first=null;second=null;busy=false;
+      if(matched===8){document.getElementById('overText').textContent='🎉 全部配对！'+moves+' 步';
+        document.getElementById('over').hidden=false;}},400);
+  }else{
+    setTimeout(()=>{first.el.textContent='❓';first.el.classList.remove('flip');
+      second.el.textContent='❓';second.el.classList.remove('flip');
+      first=null;second=null;busy=false;},750);}}
+start();
+</script><script src="shared.js"></script></body></html>
